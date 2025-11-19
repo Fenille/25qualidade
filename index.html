@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestão pela Qualidade - 25º BPM/I</title>
+
+  <style>
+    :root{
+      --amarelo:#f9e65c;
+      --amarelo-neon:#ffff66;
+      --cinza:#d0d0d0;
+      --cinza-medio:#777;
+      --bg:#050509;
+      --card-bg:rgba(10,10,15,0.96);
+      --gap:22px;
+      --radius:14px;
+      --shadow-soft:0 14px 40px rgba(0,0,0,0.8);
+    }
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    body{
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top, #202020 0, #050509 50%, #000 100%);
+      font-family:Arial, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color:var(--amarelo);
+      text-align:center;
+      overflow-x:hidden;
+      padding:16px 12px 24px;
+      position:relative;
+    }
+
+    /* ===== MOLDURA EXTERNA ===== */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:10px;
+      border-radius:22px;
+      border:1px solid rgba(249,230,92,0.9);
+      box-shadow:
+        0 0 18px rgba(249,230,92,0.35),
+        0 0 45px rgba(0,0,0,0.9);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    /* ===== WRAPPER GERAL ===== */
+    .app-shell{
+      max-width:1800px;
+      margin:0 auto;
+      background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,0.06);
+      box-shadow:var(--shadow-soft);
+      padding:18px 18px 26px;
+      position:relative;
+      z-index:1;
+    }
+
+    /* ===== CABEÇALHO ===== */
+    header{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 4px 16px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      position:relative;
+    }
+
+    .header-left{
+      text-align:left;
+    }
+
+    header h1{
+      font-size:2.1rem;
+      text-transform:uppercase;
+      letter-spacing:2px;
+      margin-bottom:4px;
+    }
+
+    header h2{
+      font-size:1.1rem;
+      font-weight:normal;
+      color:var(--cinza);
+    }
+
+    .header-slogan{
+      margin-top:6px;
+      font-size:0.9rem;
+      color:var(--cinza-medio);
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+    }
+
+    /* BRASÃO – DESKTOP: CENTRAL ENTRE AS LINHAS DO CABEÇALHO */
+    .brasao-header{
+      position:absolute;
+      left:50%;
+      top:40%;
+      transform:translate(-50%, -50%);
+      height:130px;
+      width:auto;
+      filter:drop-shadow(0 0 10px rgba(0,0,0,0.9));
+      pointer-events:none;
+    }
+
+    .header-badge{
+      align-self:flex-start;
+      padding:8px 16px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,0,0.5);
+      background:radial-gradient(circle at top, rgba(255,255,0,0.15), rgba(0,0,0,0.9));
+      font-size:0.8rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      color:var(--amarelo-neon);
+      display:flex;
+      align-items:center;
+      gap:8px;
+      box-shadow:0 0 12px rgba(255,255,0,0.35);
+    }
+
+    .header-badge-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--amarelo-neon);
+      box-shadow:0 0 8px rgba(255,255,0,0.9);
+    }
+
+    /* ===== BARRA DE CONTEXTO ===== */
+    .context-bar{
+      margin-top:10px;
+      margin-bottom:14px;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(0,0,0,0.7);
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--cinza);
+      font-size:0.82rem;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .context-pill{
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,0,0.45);
+      color:var(--amarelo-neon);
+      font-size:0.75rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      white-space:nowrap;
+    }
+
+    /* ===== SLIDESHOW ===== */
+    .banner-wrapper{
+      margin-top:8px;
+      margin-bottom:22px;
+    }
+
+    .banner-topo{
+      position:relative;
+      width:100%;
+      height:55vh;
+      max-height:480px;
+      background:#000;
+      overflow:hidden;
+      border-radius:16px;
+      box-shadow:0 18px 45px rgba(0,0,0,0.85);
+      border:1px solid rgba(255,255,255,0.05);
+    }
+
+    .banner-overlay{
+      position:absolute;
+      inset:0;
+      background:linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.15),
+        rgba(0,0,0,0.32)
+      );
+      pointer-events:none;
+      z-index:2;
+    }
+
+    .banner-topo::before,
+    .banner-topo::after{
+      content:"";
+      position:absolute;
+      top:0;
+      width:14%;
+      height:100%;
+      pointer-events:none;
+      z-index:3;
+    }
+
+    .banner-topo::before{
+      left:0;
+      background:linear-gradient(to right, #000 30%, transparent 100%);
+    }
+
+    .banner-topo::after{
+      right:0;
+      background:linear-gradient(to left, #000 30%, transparent 100%);
+    }
+
+    .slide{
+      position:absolute;
+      inset:0;
+      opacity:0;
+      transition:opacity 1s ease-in-out;
+      z-index:1;
+    }
+
+    .slide img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      background:#000;
+      filter:brightness(1.45) contrast(1.05);
+      display:block;
+    }
+
+    .slide.active{
+      opacity:1;
+    }
+
+    .dots{
+      position:absolute;
+      bottom:12px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      gap:8px;
+      z-index:4;
+      padding:4px 10px;
+      border-radius:999px;
+      background:rgba(0,0,0,0.55);
+      border:1px solid rgba(255,255,255,0.15);
+    }
+
+    .dot{
+      width:9px;
+      height:9px;
+      border-radius:50%;
+      border:1px solid var(--amarelo-neon);
+      background:rgba(0,0,0,0.8);
+      cursor:pointer;
+      transition:0.2s ease;
+    }
+
+    .dot.active{
+      background:var(--amarelo-neon);
+      box-shadow:0 0 8px rgba(255,255,0,0.9);
+      transform:scale(1.25);
+    }
+
+    .nav-btn{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,0.35);
+      background:rgba(0,0,0,0.55);
+      color:var(--amarelo-neon);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.3rem;
+      cursor:pointer;
+      z-index:4;
+      transition:0.2s ease;
+      user-select:none;
+      backdrop-filter:blur(4px);
+    }
+
+    .nav-btn:hover{
+      background:rgba(0,0,0,0.9);
+      box-shadow:0 0 12px rgba(255,255,0,0.9);
+      border-color:var(--amarelo-neon);
+    }
+
+    .nav-prev{ left:16px; }
+    .nav-next{ right:16px; }
+
+    /* ===== CONTEÚDO ===== */
+    main{
+      padding:4px 2px 0;
+    }
+
+    .intro{
+      margin:0 auto 22px;
+      max-width:1200px;
+      font-size:0.95rem;
+      color:var(--cinza);
+      line-height:1.45;
+    }
+
+    .section-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+      padding:0 4px;
+    }
+
+    .section-title{
+      text-align:left;
+      font-size:0.98rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      color:var(--cinza);
+    }
+
+    .section-title span{
+      color:var(--amarelo-neon);
+    }
+
+    .section-meta{
+      font-size:0.75rem;
+      color:var(--cinza-medio);
+      text-align:right;
+    }
+
+    .pastas-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(190px, 1fr));
+      gap:var(--gap);
+      margin-top:8px;
+    }
+
+    .pasta-card{
+      background:var(--card-bg);
+      border-radius:var(--radius);
+      border:1px solid rgba(255,255,255,0.06);
+      padding:16px 12px;
+      text-align:center;
+      cursor:pointer;
+      box-shadow:0 8px 26px rgba(0,0,0,0.8);
+      transition:
+        transform 0.16s ease,
+        box-shadow 0.16s ease,
+        border-color 0.16s ease,
+        background 0.16s ease;
+    }
+
+    .pasta-card a{
+      text-decoration:none;
+      color:var(--amarelo);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+    }
+
+    .pasta-card img{
+      width:62px;
+      height:62px;
+      object-fit:contain;
+      filter:drop-shadow(0 0 4px rgba(0,0,0,0.9));
+      transition:transform 0.16s ease, filter 0.16s ease;
+    }
+
+    .pasta-titulo{
+      font-weight:bold;
+      text-transform:uppercase;
+      font-size:0.9rem;
+      letter-spacing:0.5px;
+    }
+
+    .pasta-desc{
+      font-size:0.8rem;
+      color:var(--cinza);
+      max-width:220px;
+    }
+
+    .pasta-card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 14px 32px rgba(0,0,0,0.95);
+      border-color:rgba(255,255,0,0.6);
+      background:radial-gradient(circle at top, rgba(255,255,0,0.12), rgba(10,10,15,0.98));
+    }
+
+    .pasta-card:hover img{
+      transform:translateY(-2px) scale(1.03);
+      filter:drop-shadow(0 0 7px rgba(255,255,0,0.9));
+    }
+
+    .pasta-card:active{
+      transform:translateY(0) scale(0.98);
+      box-shadow:0 5px 18px rgba(0,0,0,0.9);
+    }
+
+    footer{
+      margin-top:24px;
+      padding-top:10px;
+      border-top:1px solid rgba(255,255,255,0.06);
+      font-size:0.78rem;
+      color:var(--cinza-medio);
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      gap:8px;
+    }
+
+    footer span{
+      opacity:0.9;
+    }
+
+    /* ===== RESPONSIVO ===== */
+    @media(max-width:720px){
+      body{
+        padding:16px 10px 22px;
+      }
+
+      .app-shell{
+        padding:14px 12px 20px;
+        border-radius:14px;
+        max-width:100%;
+      }
+
+      header{
+        flex-direction:column;
+        align-items:center;
+        gap:8px;
+      }
+
+      .header-left{
+        text-align:center;
+      }
+
+      .header-badge{
+        align-self:center;
+        justify-content:center;
+        font-size:0.78rem;
+      }
+
+      header h1{
+        font-size:1.7rem;
+      }
+
+      header h2{
+        font-size:0.95rem;
+      }
+
+      .header-slogan{
+        font-size:0.82rem;
+      }
+
+      /* MOBILE: BRASÃO NO FLUXO, ABAIXO DO TÍTULO, SEM SOBREPOR */
+      .brasao-header{
+        position:static;
+        transform:none;
+        top:auto;
+        height:90px;
+        margin-top:6px;
+        pointer-events:none;
+      }
+
+      .banner-topo{
+        height:42vh;
+        max-height:380px;
+      }
+
+      .nav-btn{
+        width:32px;
+        height:32px;
+        font-size:1.05rem;
+      }
+
+      .context-bar{
+        flex-direction:column;
+        gap:6px;
+        border-radius:12px;
+        text-align:center;
+      }
+
+      .intro{
+        font-size:0.9rem;
+        padding:0 4px;
+      }
+
+      .pastas-grid{
+        grid-template-columns:repeat(2, minmax(0,1fr));
+        gap:16px;
+      }
+
+      footer{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+
+    @media(max-width:480px){
+      body{
+        padding:10px 6px 18px;
+      }
+
+      .app-shell{
+        padding:12px 10px 18px;
+      }
+
+      .brasao-header{
+        height:78px;
+      }
+
+      .banner-topo{
+        height:38vh;
+        max-height:320px;
+      }
+
+      .section-header{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .section-meta{
+        text-align:left;
+      }
+
+      .pastas-grid{
+        grid-template-columns:1fr;
+        gap:14px;
+      }
+
+      .pasta-card{
+        padding:12px 10px;
+      }
+
+      .pasta-card img{
+        width:54px;
+        height:54px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app-shell">
+  <header>
+    <div class="header-left">
+      <h1>Gestão pela Qualidade</h1>
+      <h2>25º Batalhão de Polícia Militar do Interior</h2>
+      <div class="header-slogan">O Guardião da Paz Entre Rios</div>
+    </div>
+
+    <img src="brasao25.png" alt="Brasão do 25º BPM/I" class="brasao-header">
+
+    <div class="header-badge">
+      <div class="header-badge-dot"></div>
+      <span>Sistema de Gestão • Uso Interno</span>
+    </div>
+  </header>
+
+  <div class="context-bar">
+    <div>25º BPM/I • Gestão pela Qualidade • Indicadores, relatórios e controles operacionais.</div>
+    <div class="context-pill">Painel da Qualidade</div>
+  </div>
+
+  <div class="banner-wrapper">
+    <div class="banner-topo">
+      <div class="slide active"><img src="banner1.jpg" alt="Banner 1"></div>
+      <div class="slide"><img src="banner2.jpg" alt="Banner 2"></div>
+      <div class="slide"><img src="banner3.jpg" alt="Banner 3"></div>
+      <div class="slide"><img src="banner4.jpg" alt="Banner 4"></div>
+      <div class="slide"><img src="banner5.jpg" alt="Banner 5"></div>
+      <div class="slide"><img src="banner6.jpg" alt="Banner 6"></div>
+      <div class="slide"><img src="banner7.jpg" alt="Banner 7"></div>
+
+      <div class="banner-overlay"></div>
+
+      <div class="nav-btn nav-prev" id="prevBtn">&#10094;</div>
+      <div class="nav-btn nav-next" id="nextBtn">&#10095;</div>
+
+      <div class="dots">
+        <div class="dot active" data-index="0"></div>
+        <div class="dot" data-index="1"></div>
+        <div class="dot" data-index="2"></div>
+        <div class="dot" data-index="3"></div>
+        <div class="dot" data-index="4"></div>
+        <div class="dot" data-index="5"></div>
+        <div class="dot" data-index="6"></div>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <p class="intro">
+      Portal interno do 25º BPM/I para acompanhamento da Gestão pela Qualidade:
+      acesso rápido a relatórios consolidados, registros de atividades externas,
+      indicadores e documentos de apoio à tomada de decisão.
+    </p>
+
+    <div class="section-header">
+      <div class="section-title">
+        <span>Módulos de gestão</span> • acesso rápido
+      </div>
+      <div class="section-meta">
+        Utilize os atalhos abaixo para abrir planilhas, formulários e documentos.
+      </div>
+    </div>
+
+    <section class="pastas-grid">
+
+      <div class="pasta-card">
+        <a href="https://docs.google.com/spreadsheets/d/1Tf2EJuEW2SWHk4HyrnKcSfaa5HcIF5_M3KZz93JdU7U/edit?gid=1672228044#gid=1672228044" target="_blank" rel="noopener noreferrer">
+          <img src="planilha.png" alt="Pasta Relatório">
+          <div class="pasta-titulo">Painel de Bordo</div>
+          <div class="pasta-desc">Relatórios consolidados de desempenho e análise da qualidade.</div>
+        </a>
+      </div>
+
+      <div class="pasta-card">
+        <a href="https://docs.google.com/spreadsheets/d/1FihjLrxuL6CX82oal5Ac-oSseaKPPImKnMVcAlvMNMY/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer">
+          <img src="forms.png" alt="Pasta Controle de Atividades Externas">
+          <div class="pasta-titulo">Pesquisa de Satisfação do Cliente</div>
+          <div class="pasta-desc">Registro padronizado de atividades externas vinculadas à qualidade.</div>
+        </a>
+      </div>
+
+      <div class="pasta-card">
+        <a href="#" target="_blank" rel="noopener noreferrer">
+          <img src="pasta.png" alt="Pasta Indicadores">
+          <div class="pasta-titulo">Indicadores</div>
+          <div class="pasta-desc">Indicadores estratégicos e operacionais da Gestão pela Qualidade.</div>
+        </a>
+      </div>
+
+      <div class="pasta-card">
+        <a href="#" target="_blank" rel="noopener noreferrer">
+          <img src="pasta.png" alt="Pasta Planilhas de Controle">
+          <div class="pasta-titulo">Planilhas de Controle</div>
+          <div class="pasta-desc">Modelos e controles utilizados na rotina administrativa.</div>
+        </a>
+      </div>
+
+      <div class="pasta-card">
+        <a href="#" target="_blank" rel="noopener noreferrer">
+          <img src="pasta.png" alt="Pasta Documentos Internos">
+          <div class="pasta-titulo">Documentos Internos</div>
+          <div class="pasta-desc">Normas, orientações, fluxos e documentos de referência.</div>
+        </a>
+      </div>
+
+      <div class="pasta-card">
+        <a href="#" target="_blank" rel="noopener noreferrer">
+          <img src="pasta.png" alt="Pasta Outros Arquivos">
+          <div class="pasta-titulo">Outros Arquivos</div>
+          <div class="pasta-desc">Materiais complementares de apoio à Gestão pela Qualidade.</div>
+        </a>
+      </div>
+
+    </section>
+  </main>
+
+  <footer>
+    <span>Gestão pela Qualidade • 25º BPM/I</span>
+    <span>Ambiente interno – utilização restrita ao efetivo autorizado.</span>
+  </footer>
+</div>
+
+<!-- ===== SCRIPT DO SLIDESHOW ===== -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const slides = document.querySelectorAll('.slide');
+    const dots   = document.querySelectorAll('.dot');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    if (!slides.length || !dots.length) return;
+
+    let current = 0;
+    let timer = null;
+    const interval = 6000;
+
+    function showSlide(index){
+      slides[current].classList.remove('active');
+      dots[current].classList.remove('active');
+
+      current = (index + slides.length) % slides.length;
+
+      slides[current].classList.add('active');
+      dots[current].classList.add('active');
+    }
+
+    function startAuto(){
+      stopAuto();
+      timer = setInterval(() => {
+        showSlide(current + 1);
+      }, interval);
+    }
+
+    function stopAuto(){
+      if(timer){
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        stopAuto();
+        showSlide(+dot.dataset.index);
+        startAuto();
+      });
+    });
+
+    if (prevBtn && nextBtn){
+      prevBtn.addEventListener('click', () => {
+        stopAuto();
+        showSlide(current - 1);
+        startAuto();
+      });
+
+      nextBtn.addEventListener('click', () => {
+        stopAuto();
+        showSlide(current + 1);
+        startAuto();
+      });
+    }
+
+    startAuto();
+  });
+</script>
+
+</body>
+</html>
